@@ -35,7 +35,7 @@ namespace prec_ctrl {
         \tparam WIDTH The bit width of the significand, including the sign bit and the hidden bit of double.
         \tparam PLACE The LSB place whose \#n has the weight 2**n.
 
-        FixedPoint can multiply, add, and subtract exactly. The precision and the potision is automatically adjusted. Convert a value into double if you would use divide operator because they cannot determine a precision without some instructions from the programmer.
+        FixedPoint can multiply, add, and subtract exactly. The precision and the place is automatically adjusted. Convert a value into double if you would use divide operator because they cannot determine a precision without some instructions from the programmer.
 
         The result of the functions is the exact value unless the description of the function notes about rounding or clamping, however FixedPoint must contain less than or equal the range of double. If you try to create an instance has more than double precision, a compilation error will be caused. The reason why FixedPoint is restricted to double precision is to make exact conversion FixedPoint to double.
 

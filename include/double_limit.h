@@ -69,7 +69,7 @@ namespace prec_ctrl {
 
         a = std::nearbyint(a * std::exp2(-place));
 
-        // clmaping
+        // clamping
 #ifndef NDEBUG
         constexpr int DBL_MAX_BIT_WIDTH = std::numeric_limits<double>::digits + 1;
         constexpr int DBL_MIN_BIT_WIDTH = 2;

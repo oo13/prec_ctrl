@@ -32,9 +32,9 @@
 using namespace prec_ctrl;
 
 
-// This function retuens a random positive integer (including 0) vector.
+// This function returns a random positive integer (including 0) vector.
 // The sum of the result is `sum`.
-// The minimum size of the resule is `minimum_size`.
+// The minimum size of the result is `minimum_size`.
 std::vector<unsigned int> gen_int_vector(unsigned int sum, const unsigned int minimum_size)
 {
     std::mt19937 random_engine;
@@ -48,7 +48,7 @@ std::vector<unsigned int> gen_int_vector(unsigned int sum, const unsigned int mi
     return v;
 }
 
-// This function retuens a random double vector.
+// This function returns a random double vector.
 std::vector<double> gen_real_vector(const size_t s, const double abs_max)
 {
     std::mt19937_64 random_engine;
@@ -98,7 +98,7 @@ copy_from_double_vector(const std::vector<double> &a)
 }
 
 
-// double version of test fucntion
+// double version of test function
 double multi_and_sum(const std::vector<unsigned int> &n, const std::vector<double> &r)
 {
     double sum = 0.0;
@@ -108,7 +108,7 @@ double multi_and_sum(const std::vector<unsigned int> &n, const std::vector<doubl
     return sum;
 }
 
-// FixedPoint version of test fucntion
+// FixedPoint version of test function
 template<int WIDTH_sig, int WIDTH_n, int PLACE_n, int WIDTH_r, int PLACE_r>
 significand_t<WIDTH_sig>
 multi_and_sum(const std::vector<FixedPoint<WIDTH_n, PLACE_n>> &n,

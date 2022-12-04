@@ -89,7 +89,7 @@ TEST_CASE( "Copy from double", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, 0>(-a) == -127.0 );
 }
 
-TEST_CASE( "Implicit convertion to double", "[FixedPoint]" ) {
+TEST_CASE( "Implicit conversion to double", "[FixedPoint]" ) {
     SECTION( "Possibility of double operation" ) {
         REQUIRE( FixedPoint<8, -4>(1.23) + 2.34 ==  limit_precision(1.23, 8, -4) + 2.34 );
         REQUIRE( floor(FixedPoint<6, -2>(4.56)) == 4.0 );
@@ -101,7 +101,7 @@ TEST_CASE( "Implicit convertion to double", "[FixedPoint]" ) {
     }
 }
 
-TEST_CASE( "Explicit convertion to bool", "[FixedPoint]" ) {
+TEST_CASE( "Explicit conversion to bool", "[FixedPoint]" ) {
     REQUIRE( static_cast<bool>(FixedPoint<8, -4>(1.23)) );
     REQUIRE( static_cast<bool>(FixedPoint<8, -4>(0.00001)) == false );
 }
@@ -303,7 +303,7 @@ TEST_CASE( "Relational operator ==", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<7, -2>(5.25) == FixedPoint<8, -4>(5.25) );
     REQUIRE( ! (FixedPoint<8, 0>(1E+10) == FixedPoint<4, 0>(1E+10)) );
     REQUIRE( ! (FixedPoint<8, 0>(-1E+10) == FixedPoint<4, 0>(-1E+10)) );
-    // no overlaped range
+    // no overlapped range
     REQUIRE( ! (FixedPoint<2, -2>(1000.0) == FixedPoint<2, 8>(1000.0)) );
 }
 
@@ -314,7 +314,7 @@ TEST_CASE( "Relational operator !=", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<2, -2>(1000.0) != FixedPoint<2, 8>(1000.0) );
     REQUIRE( FixedPoint<8, 0>(1E+10) != FixedPoint<4, 0>(1E+10) );
     REQUIRE( FixedPoint<8, 0>(-1E+10) != FixedPoint<4, 0>(-1E+10) );
-    // no overlaped range
+    // no overlapped range
     REQUIRE( FixedPoint<2, -2>(1000.0) != FixedPoint<2, 8>(1000.0) );
 }
 
@@ -323,7 +323,7 @@ TEST_CASE( "Relational operator <", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, -4>(-5.3) < FixedPoint<8, -4>(-5.25) );
     REQUIRE( FixedPoint<8, -4>(-5.3) < FixedPoint<7, -2>(-5.3) );
     REQUIRE( FixedPoint<7, -2>(5.3) < FixedPoint<8, -4>(5.3) );
-    // no overlaped range
+    // no overlapped range
     REQUIRE( FixedPoint<2, -2>(1000.0) < FixedPoint<2, 8>(1000.0) );
 }
 
@@ -336,7 +336,7 @@ TEST_CASE( "Relational operator <=", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, -4>(-5.3) <= FixedPoint<8, -4>(-5.25) );
     REQUIRE( FixedPoint<8, -4>(-5.3) <= FixedPoint<7, -2>(-5.3) );
     REQUIRE( FixedPoint<7, -2>(5.3) <= FixedPoint<8, -4>(5.3) );
-    // no overlaped range
+    // no overlapped range
     REQUIRE( FixedPoint<2, -2>(1000.0) <= FixedPoint<2, 8>(1000.0) );
 }
 
@@ -345,7 +345,7 @@ TEST_CASE( "Relational operator >", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, -4>(5.3) > FixedPoint<8, -4>(5.25) );
     REQUIRE( FixedPoint<8, -4>(5.3) > FixedPoint<7, -2>(5.3) );
     REQUIRE( FixedPoint<7, -2>(-5.3) > FixedPoint<8, -4>(-5.3) );
-    // no overlaped range
+    // no overlapped range
     REQUIRE( FixedPoint<2, 8>(1000.0) > FixedPoint<2, -2>(1000.0) );
 }
 
@@ -358,7 +358,7 @@ TEST_CASE( "Relational operator >=", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, -4>(5.3) >= FixedPoint<8, -4>(5.25) );
     REQUIRE( FixedPoint<8, -4>(5.3) >= FixedPoint<7, -2>(5.3) );
     REQUIRE( FixedPoint<7, -2>(-5.3) >= FixedPoint<8, -4>(-5.3) );
-    // no overlaped range
+    // no overlapped range
     REQUIRE( FixedPoint<2, 8>(1000.0) >= FixedPoint<2, -2>(1000.0) );
 }
 

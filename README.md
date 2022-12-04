@@ -29,7 +29,7 @@ In IEEE-754, the double has 54 bits significand. (In this document, "significand
 In practical range, exactness doesn't depend on the exponent.
 
 ### The Sufficient Bit-Width of the Significand for Double Operations
-It's almost same as the integer operation. To make it clear, I created [FixedPoint](@ref prec_ctrl::FixedPoint) class calculating with the same way of double. It handles the number by manually shifting and culculating of the integer.
+It's almost same as the integer operation. To make it clear, I created [FixedPoint](@ref prec_ctrl::FixedPoint) class calculating with the same way of double. It handles the number by manually shifting and calculating of the integer.
 
 #### For Addition/Subtraction
 Basically, the addition and the subtraction add one bit-width to the significand. More strictly, it's two plus the difference of the places of the higher MSB and the lower LSB.
@@ -107,7 +107,7 @@ There is some algorithms for a pretty printing in order to exchange the values, 
 ### To Output a Value in the User Interface
 You may forge an output as the users wish. I recommend using a radix 10 rounding (such as rounding at the place 1/10) only for an output in a UI; Use a radix 2 rounding (such as rounding at the place 1/16) for others, including the input from the users. If you really need to handle exact 10<sup>-n</sup>, you should change the unit to 10<sup>-n</sup> (it means the value 1 represents 10<sup>-n</sup>), and also if you are quite sure that the unit should be 10<sup>-n</sup>, you may consider using an integer type instead of double.
 
-## The Precsion Control Library
+## The Precision Control Library
 This repository includes the library to control the precision of double and to handle a fixed point number.
 
 ### Compilation
