@@ -24,48 +24,23 @@
 
 #include <cstdint>
 #include <limits>
+#include <type_traits>
 
 namespace prec_ctrl {
-    /** The internal class for switching the bit width of integer type.
-        \tparam WIDTH The required width.
-        \tparam more_than_32bit true if WIDTH is more than 32.
-    */
-    template<int WIDTH, bool more_than_32bit>
-    class SignificandTypeHolder_ {
-    public:
-        /** signed int type. */
-        typedef std::int_fast32_t value_type;
-        /** unsigned int type. */
-        typedef std::uint_fast32_t u_value_type;
-        static_assert(WIDTH <= std::numeric_limits<u_value_type>::digits, "");
-    };
-    /** The partial specialized class holding 64 bit integer type.
-        \tparam WIDTH The required width.
-     */
-    template<int WIDTH>
-    class SignificandTypeHolder_<WIDTH, true> {
-    public:
-        /** signed int type. */
-        typedef std::int_fast64_t value_type;
-        /** unsigned int type. */
-        typedef std::uint_fast64_t u_value_type;
-        static_assert(WIDTH <= std::numeric_limits<u_value_type>::digits, "");
-    };
-
     /** The signed integer type of the significand.
         \tparam WIDTH The required width.
 
         The signed integer type of the significand, including the hidden bit and the sign bit of double.
     */
     template<int WIDTH>
-    using significand_t = typename SignificandTypeHolder_<WIDTH, (WIDTH > 32)>::value_type;
+    using significand_t = std::conditional_t<(WIDTH > 32), std::int_fast64_t, std::int_fast32_t>;
     /** The unsigned integer type of the significand.
         \tparam WIDTH The required width.
 
         The unsigned integer type of the significand, including the hidden bit and the sign bit of double.
     */
     template<int WIDTH>
-    using u_significand_t = typename SignificandTypeHolder_<WIDTH, (WIDTH > 32)>::u_value_type;
+    using u_significand_t = std::make_unsigned_t<significand_t<WIDTH>>;
 
     /** The minimum bit width of significand_t.
         \note significand_t needs the sign bit and 1 bit at least.
