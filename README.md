@@ -18,7 +18,7 @@ Copyright © 2022 OOTA, Masato
 
 # Controlling the Precision of Double to Accumulate Exactly
 ## In Short
-You can limit the precision of the input value so that the multiplication and the addition/subtraction result the exact double precision value because the operations doesn't cause a rounding.
+You can limit the precision of the input value so that the multiplication and the addition/subtraction result the exact double precision value because the operations don't cause a rounding.
 
 Only what you need is [prec_ctrl::limit_precision(double, int, int)](@ref limit_precision()) in ["include/double_limit.h"](@ref include/double_limit.h). By the way, you can easily write your version of it because it's a simple function.
 
