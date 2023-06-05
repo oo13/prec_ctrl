@@ -126,6 +126,10 @@ namespace prec_ctrl {
         /** Default copy operator */
         constexpr FixedPoint &operator=(const FixedPoint &src) noexcept = default;
         /** Default destructor */
+#ifdef __cpp_constexpr_dynamic_alloc
+        // for C++20
+        constexpr
+#endif
         ~FixedPoint() noexcept = default;
 
         /** Clone from a narrower FixedPoint.
@@ -188,6 +192,10 @@ namespace prec_ctrl {
             \return The value as double.
             \note The conversion isn't explicit because the new value is exactly equal to this.
         */
+#if __cplusplus > 202002L
+        // for C++23
+        constexpr
+#endif
         operator double() const
         {
             return std::ldexp(significand, PLACE);
