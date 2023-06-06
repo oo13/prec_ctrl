@@ -393,7 +393,7 @@ namespace prec_ctrl {
 
 
         /** ceil function.
-            \return The nearest integer away from zero of this.
+            \return The minimum integer more than or equal this.
             \note This function may cause overflow, so it increases one bit than the integer part of this type.
         */
         constexpr integer_part_t<1> ceil() const noexcept
@@ -412,7 +412,7 @@ namespace prec_ctrl {
         }
 
         /** floor function.
-            \return The nearest integer toward zero of this.
+            \return The maximum integer less than or equal this.
             \note This function may cause overflow, so it increases one bit than the integer part of this type.
         */
         constexpr integer_part_t<1> floor() const noexcept
