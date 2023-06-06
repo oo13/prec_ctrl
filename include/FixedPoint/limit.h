@@ -22,8 +22,9 @@
 #ifndef PREC_CTRL_LIMIT_H_
 #define PREC_CTRL_LIMIT_H_
 
-#include <limits>
 #include <cmath>
+#include <limits>
+#include <type_traits>
 
 #include "FixedPoint/significand.h"
 
@@ -36,22 +37,27 @@ namespace prec_ctrl {
     constexpr int MAX_MSB_PLACE = std::numeric_limits<double>::max_exponent;
 
 
-    /** Clamp the value when it's out of range.
+    /** Clamp the significand when it's out of range.
         \tparam WIDTH The bit width of the significand, including the hidden bit and the sign bit of double.
-        \param [in] i The source value.
+        \tparam T The type of the source value.
+        \param [in] v The source value.
         \return The clamped value.
+        \note T can be double because abs(v) may be more than MAX_SIGNIFICAND_VALUE<MAX_BIT_WIDTH>.
     */
-    template<int WIDTH>
-    constexpr significand_t<WIDTH> clamp(significand_t<WIDTH> i)
+    template<int WIDTH, typename T>
+    constexpr significand_t<WIDTH> clamp_significand(const T v)
     {
         static_assert(MIN_BIT_WIDTH <= WIDTH, "");
         static_assert(WIDTH <= MAX_BIT_WIDTH, "");
-        if (i > MAX_SIGNIFICAND_VALUE<WIDTH>) {
+        if constexpr (std::is_signed_v<T>) {
+            if (v < MIN_SIGNIFICAND_VALUE<WIDTH>) {
+                return MIN_SIGNIFICAND_VALUE<WIDTH>;
+            }
+        }
+        if (v > MAX_SIGNIFICAND_VALUE<WIDTH>) {
             return MAX_SIGNIFICAND_VALUE<WIDTH>;
-        } else if (i < MIN_SIGNIFICAND_VALUE<WIDTH>) {
-            return MIN_SIGNIFICAND_VALUE<WIDTH>;
         } else {
-            return i;
+            return v;
         }
     }
 
@@ -69,7 +75,7 @@ namespace prec_ctrl {
     {
         static_assert(MIN_LSB_PLACE <= PLACE, "");
         static_assert(WIDTH + PLACE <= MAX_MSB_PLACE, "");
-        return clamp<WIDTH>(std::nearbyint(a * std::exp2(-PLACE)));
+        return clamp_significand<WIDTH>(std::nearbyint(a * std::exp2(-PLACE)));
     }
 }
 

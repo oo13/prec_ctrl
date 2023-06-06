@@ -76,6 +76,9 @@ TEST_CASE( "Reduce dynamic range", "[FixedPoint]" ) {
     REQUIRE( a.reduce_dynamic_range<8>() == 4 + 2 + 1 + 1.0/2 + 1.0/4 + 1.0/8 + 1.0/16 );
     REQUIRE( a.reduce_dynamic_range<10>() == FixedPoint<10, -4>(123.9876) );
     REQUIRE( a.reduce_dynamic_range<6>() == limit_precision(a, 6, -4) );
+    FixedPoint<33, 0> b;
+    b.set_significand(0x100000001LL);
+    REQUIRE( b.reduce_dynamic_range<16>() == 0x7FFF );
 }
 
 TEST_CASE( "Copy from double", "[FixedPoint]" ) {
@@ -87,6 +90,10 @@ TEST_CASE( "Copy from double", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, -10>(a) == limit_precision(a, 8, -10) );
     // minimum value
     REQUIRE( FixedPoint<8, 0>(-a) == -127.0 );
+    // clamping
+    double b = 0x10001000L;
+    b *= std::exp2(36);
+    REQUIRE( FixedPoint<54, 0>(b) == 0x001FFFFFFFFFFFFFLL );
 }
 
 TEST_CASE( "Implicit conversion to double", "[FixedPoint]" ) {
@@ -1063,11 +1070,14 @@ TEST_CASE( "set_significand()", "[FixedPoint]" ) {
     a.set_significand(-0x31);
     REQUIRE( a == -3.0 - 1.0/16 );
     // maximum value
-    a.set_significand(1000.0);
+    a.set_significand(1000);
     REQUIRE( a == 7.0 + 1.0/2 + 1.0/4 + 1.0/8 + 1.0/16 );
     // minimum value
-    a.set_significand(-1000.0);
+    a.set_significand(-1000);
     REQUIRE( a == -(7.0 + 1.0/2 + 1.0/4 + 1.0/8 + 1.0/16) );
+    // clamping
+    a.set_significand(0x100000001LL);
+    REQUIRE( a == 7.0 + 1.0/2 + 1.0/4 + 1.0/8 + 1.0/16 );
 }
 
 TEST_CASE( "get_width()", "[FixedPoint]" ) {

@@ -176,7 +176,7 @@ namespace prec_ctrl {
         constexpr FixedPoint<DEST_WIDTH, PLACE> reduce_dynamic_range() const noexcept
         {
             FixedPoint<DEST_WIDTH, PLACE> result;
-            result.significand = clamp<DEST_WIDTH>(significand);
+            result.significand = clamp_significand<DEST_WIDTH>(significand);
             return result;
         }
 
@@ -548,13 +548,16 @@ namespace prec_ctrl {
         }
 
         /** Set the value of the significand.
-            \param [in] i The value tried to set into significand.
+            \tparam T The type of the source value.
+            \param [in] v The value tried to set into significand.
             \return this
-            \note i is clamped if it's out of range.
+            \note v is clamped if it's out of range.
+            \note T can be double because abs(v) may be more than MAX_SIGNIFICAND_VALUE<MAX_BIT_WIDTH>.
         */
-        constexpr FixedPoint &set_significand(const significand_t<WIDTH> i) noexcept
+        template<typename T>
+        constexpr FixedPoint &set_significand(const T v) noexcept
         {
-            significand = clamp<WIDTH>(i);
+            significand = clamp_significand<WIDTH>(v);
             return *this;
         }
 

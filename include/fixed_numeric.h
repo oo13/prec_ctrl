@@ -140,7 +140,7 @@ namespace prec_ctrl {
         // result has the exact value because it has WIDTH1 + 1 bits.
         const significand_t<WIDTH1 + 1> result
             = accumulator + increment.get_significand();
-        return clamp<WIDTH1>(result);
+        return clamp_significand<WIDTH1>(result);
     }
 }
 
