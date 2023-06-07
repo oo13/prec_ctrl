@@ -613,7 +613,7 @@ TEST_CASE( "round_half_to_even()", "[FixedPoint]" ) {
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
-        auto a = FixedPoint<34, -2>(1E+10).ceil();
+        auto a = FixedPoint<34, -2>(1E+10).round_half_to_even();
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.get_width() == 33 );
         REQUIRE( a.get_place() == 0 );
@@ -721,7 +721,7 @@ TEST_CASE( "round_half_away_from_zero()", "[FixedPoint]" ) {
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
-        auto a = FixedPoint<34, -2>(1E+10).ceil();
+        auto a = FixedPoint<34, -2>(1E+10).round_half_away_from_zero();
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.get_width() == 33 );
         REQUIRE( a.get_place() == 0 );
@@ -829,7 +829,7 @@ TEST_CASE( "round_half_toward_zero()", "[FixedPoint]" ) {
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
-        auto a = FixedPoint<34, -2>(1E+10).ceil();
+        auto a = FixedPoint<34, -2>(1E+10).round_half_toward_zero();
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.get_width() == 33 );
         REQUIRE( a.get_place() == 0 );
@@ -937,7 +937,7 @@ TEST_CASE( "round_half_up()", "[FixedPoint]" ) {
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
-        auto a = FixedPoint<34, -2>(1E+10).ceil();
+        auto a = FixedPoint<34, -2>(1E+10).round_half_up();
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.get_width() == 33 );
         REQUIRE( a.get_place() == 0 );
@@ -1045,7 +1045,7 @@ TEST_CASE( "round_half_down()", "[FixedPoint]" ) {
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
-        auto a = FixedPoint<34, -2>(1E+10).ceil();
+        auto a = FixedPoint<34, -2>(1E+10).round_half_down();
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.get_width() == 33 );
         REQUIRE( a.get_place() == 0 );
