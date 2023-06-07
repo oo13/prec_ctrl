@@ -422,7 +422,7 @@ namespace prec_ctrl {
                 // this is an integer.
                 result.significand = significand;
             } else {
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH>
+                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
                     significand_ext = significand;
                 result.significand = significand_ext >> -PLACE;
             }
