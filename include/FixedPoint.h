@@ -69,6 +69,13 @@ namespace prec_ctrl {
 
 
     public:
+        /** The bit width. */
+        static constexpr int width = WIDTH;
+
+        /** The place. */
+        static constexpr int place = PLACE;
+
+
         /** The computation of a bit width for superset_t and addtion_result_t.
             \param [in] width2 Another WIDTH
             \param [in] place2 Another PLACE
@@ -559,22 +566,6 @@ namespace prec_ctrl {
         {
             significand = clamp_significand<WIDTH>(v);
             return *this;
-        }
-
-        /** Get the bit width.
-            \return The bit width of the significand, including the hidden bit and the sign bit of double.
-        */
-        constexpr int get_width() const noexcept
-        {
-            return WIDTH;
-        }
-
-        /** Get the place.
-            \return The place of LSB. The place\#n has the weight 2**n.
-        */
-        constexpr int get_place() const noexcept
-        {
-            return PLACE;
         }
 
 

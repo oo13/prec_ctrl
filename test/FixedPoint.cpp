@@ -160,53 +160,53 @@ TEST_CASE( "Binary operator +", "[FixedPoint]" ) {
     SECTION( "Precision" ) {
         // same width and place
         auto a = FixedPoint<8, -5>(1.23) + FixedPoint<8, -5>(0.23);
-        REQUIRE( a.get_width() == 9 );
-        REQUIRE( a.get_place() == -5 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == -5 );
         // same place
         auto b = FixedPoint<9, -5>(1.23) + FixedPoint<7, -5>(0.23);
-        REQUIRE( b.get_width() == 10 );
-        REQUIRE( b.get_place() == -5 );
+        REQUIRE( b.width == 10 );
+        REQUIRE( b.place == -5 );
         // wider + narrower
         auto c1 = FixedPoint<10, -8>(1.23) + FixedPoint<5, -4>(0.23);
-        REQUIRE( c1.get_width() == 11 );
-        REQUIRE( c1.get_place() == -8 );
+        REQUIRE( c1.width == 11 );
+        REQUIRE( c1.place == -8 );
         // narrower + wider
         auto c2 = FixedPoint<5, -4>(0.23) + FixedPoint<10, -8>(1.23);
-        REQUIRE( c2.get_width() == 11 );
-        REQUIRE( c2.get_place() == -8 );
+        REQUIRE( c2.width == 11 );
+        REQUIRE( c2.place == -8 );
         // lower + higher
         auto d1 = FixedPoint<13, -10>(1.23) + FixedPoint<7, 1>(0.23);
-        REQUIRE( d1.get_width() == 19 );
-        REQUIRE( d1.get_place() == -10 );
+        REQUIRE( d1.width == 19 );
+        REQUIRE( d1.place == -10 );
         // higher + lower
         auto d2 = FixedPoint<7, 1>(0.23) + FixedPoint<13, -10>(1.23);
-        REQUIRE( d2.get_width() == 19 );
-        REQUIRE( d2.get_place() == -10 );
+        REQUIRE( d2.width == 19 );
+        REQUIRE( d2.place == -10 );
         // lower + higher (without overlap)
         auto e1 = FixedPoint<10, -10>(1.23) + FixedPoint<7, 4>(0.23);
-        REQUIRE( e1.get_width() == 21 );
-        REQUIRE( e1.get_place() == -10 );
+        REQUIRE( e1.width == 21 );
+        REQUIRE( e1.place == -10 );
         // higher + lower (without overlap)
         auto e2 = FixedPoint<7, 4>(0.23) + FixedPoint<10, -10>(1.23);
-        REQUIRE( e2.get_width() == 21 );
-        REQUIRE( e2.get_place() == -10 );
+        REQUIRE( e2.width == 21 );
+        REQUIRE( e2.place == -10 );
         // lower + higher (overlap only sign bit)
         auto f1 = FixedPoint<10, -10>(1.23) + FixedPoint<7, -1>(0.23);
-        REQUIRE( f1.get_width() == 16 );
-        REQUIRE( f1.get_place() == -10 );
+        REQUIRE( f1.width == 16 );
+        REQUIRE( f1.place == -10 );
         // higher + lower (overlap only sign bit)
         auto f2 = FixedPoint<7, -1>(0.23) + FixedPoint<10, -10>(1.23);
-        REQUIRE( f2.get_width() == 16 );
-        REQUIRE( f2.get_place() == -10 );
+        REQUIRE( f2.width == 16 );
+        REQUIRE( f2.place == -10 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(2) * ((1u << 31) - 1);
         auto a = FixedPoint<32, 0>(1E+10) + FixedPoint<32, 0>(1E+10);
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
+        REQUIRE( a.width == 33 );
         auto b = FixedPoint<32, 0>(-1E+10) + FixedPoint<32, 0>(-1E+10);
         REQUIRE( b.get_significand() == -expected );
-        REQUIRE( b.get_width() == 33 );
+        REQUIRE( b.width == 33 );
     }
 }
 
@@ -228,53 +228,53 @@ TEST_CASE( "Binary operator -", "[FixedPoint]" ) {
     SECTION( "Precision" ) {
         // same width and place
         auto a = FixedPoint<8, -5>(1.23) - FixedPoint<8, -5>(0.23);
-        REQUIRE( a.get_width() == 9 );
-        REQUIRE( a.get_place() == -5 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == -5 );
         // same place
         auto b = FixedPoint<9, -5>(1.23) - FixedPoint<7, -5>(0.23);
-        REQUIRE( b.get_width() == 10 );
-        REQUIRE( b.get_place() == -5 );
+        REQUIRE( b.width == 10 );
+        REQUIRE( b.place == -5 );
         // wider - narrower
         auto c1 = FixedPoint<10, -8>(1.23) - FixedPoint<5, -4>(0.23);
-        REQUIRE( c1.get_width() == 11 );
-        REQUIRE( c1.get_place() == -8 );
+        REQUIRE( c1.width == 11 );
+        REQUIRE( c1.place == -8 );
         // narrower - wider
         auto c2 = FixedPoint<5, -4>(0.23) - FixedPoint<10, -8>(1.23);
-        REQUIRE( c2.get_width() == 11 );
-        REQUIRE( c2.get_place() == -8 );
+        REQUIRE( c2.width == 11 );
+        REQUIRE( c2.place == -8 );
         // lower - higher
         auto d1 = FixedPoint<13, -10>(1.23) - FixedPoint<7, 1>(0.23);
-        REQUIRE( d1.get_width() == 19 );
-        REQUIRE( d1.get_place() == -10 );
+        REQUIRE( d1.width == 19 );
+        REQUIRE( d1.place == -10 );
         // higher - lower
         auto d2 = FixedPoint<7, 1>(0.23) - FixedPoint<13, -10>(1.23);
-        REQUIRE( d2.get_width() == 19 );
-        REQUIRE( d2.get_place() == -10 );
+        REQUIRE( d2.width == 19 );
+        REQUIRE( d2.place == -10 );
         // lower - higher (without overlap)
         auto e1 = FixedPoint<10, -10>(1.23) - FixedPoint<7, 4>(0.23);
-        REQUIRE( e1.get_width() == 21 );
-        REQUIRE( e1.get_place() == -10 );
+        REQUIRE( e1.width == 21 );
+        REQUIRE( e1.place == -10 );
         // higher - lower (without overlap)
         auto e2 = FixedPoint<7, 4>(0.23) - FixedPoint<10, -10>(1.23);
-        REQUIRE( e2.get_width() == 21 );
-        REQUIRE( e2.get_place() == -10 );
+        REQUIRE( e2.width == 21 );
+        REQUIRE( e2.place == -10 );
         // lower - higher (overlap only sign bit)
         auto f1 = FixedPoint<10, -10>(1.23) - FixedPoint<7, -1>(0.23);
-        REQUIRE( f1.get_width() == 16 );
-        REQUIRE( f1.get_place() == -10 );
+        REQUIRE( f1.width == 16 );
+        REQUIRE( f1.place == -10 );
         // higher - lower (overlap only sign bit)
         auto f2 = FixedPoint<7, -1>(0.23) - FixedPoint<10, -10>(1.23);
-        REQUIRE( f2.get_width() == 16 );
-        REQUIRE( f2.get_place() == -10 );
+        REQUIRE( f2.width == 16 );
+        REQUIRE( f2.place == -10 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(2) * ((1u << 31) - 1);
         auto a = FixedPoint<32, 0>(1E+10) - FixedPoint<32, 0>(-1E+10);
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
+        REQUIRE( a.width == 33 );
         auto b = FixedPoint<32, 0>(-1E+10) - FixedPoint<32, 0>(1E+10);
         REQUIRE( b.get_significand() == -expected );
-        REQUIRE( b.get_width() == 33 );
+        REQUIRE( b.width == 33 );
     }
 }
 
@@ -290,17 +290,17 @@ TEST_CASE( "Binary operator *", "[FixedPoint]" ) {
     }
     SECTION( "Precision" ) {
         auto a = FixedPoint<8, -4>(1.23) * FixedPoint<7, -5>(0.23);
-        REQUIRE( a.get_width() == 14 );
-        REQUIRE( a.get_place() == -9 );
+        REQUIRE( a.width == 14 );
+        REQUIRE( a.place == -9 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0xFFFF) * 0xFFFF;
         auto a = FixedPoint<17, 0>(1E+10) * FixedPoint<17, 0>(1E+10);
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
+        REQUIRE( a.width == 33 );
         auto b = FixedPoint<17, 0>(-1E+10) * FixedPoint<17, 0>(1E+10);
         REQUIRE( b.get_significand() == -expected );
-        REQUIRE( b.get_width() == 33 );
+        REQUIRE( b.width == 33 );
     }
 }
 
@@ -372,8 +372,8 @@ TEST_CASE( "Relational operator >=", "[FixedPoint]" ) {
 TEST_CASE( "exp2()", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, -4>(5.25).exp2<10>() == limit_precision(5.25 * (1u<<10), 8, 6) );
     FixedPoint<8, 3> a(12345.0);
-    REQUIRE( a.exp2<-10>().get_width() == 8 );
-    REQUIRE( a.exp2<-10>().get_place() == -7 );
+    REQUIRE( a.exp2<-10>().width == 8 );
+    REQUIRE( a.exp2<-10>().place == -7 );
 }
 
 TEST_CASE( "ceil()", "[FixedPoint]" ) {
@@ -381,66 +381,66 @@ TEST_CASE( "ceil()", "[FixedPoint]" ) {
         // integer
         auto a(FixedPoint<8, 0>(100.0).ceil());
         REQUIRE( a == 100 );
-        REQUIRE( a.get_width() == 8 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
         auto b(FixedPoint<16, 2>(200.0).ceil());
         REQUIRE( b == 200 );
-        REQUIRE( b.get_width() == 16 );
-        REQUIRE( b.get_place() == 2 );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 2 );
         // with number after the decimal point
         auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).ceil());
         REQUIRE( c1 == 3 );
-        REQUIRE( c1.get_width() == 5 );
-        REQUIRE( c1.get_place() == 0 );
+        REQUIRE( c1.width == 5 );
+        REQUIRE( c1.place == 0 );
         auto c2(FixedPoint<8, -4>(2.5).ceil());
         REQUIRE( c2 == 3 );
-        REQUIRE( c2.get_width() == 5 );
-        REQUIRE( c2.get_place() == 0 );
+        REQUIRE( c2.width == 5 );
+        REQUIRE( c2.place == 0 );
         // only number after the decimal point
         auto d1(FixedPoint<8, -10>(1.0/1024).ceil());
         REQUIRE( d1 == 1 );
-        REQUIRE( d1.get_width() == 2 );
-        REQUIRE( d1.get_place() == 0 );
+        REQUIRE( d1.width == 2 );
+        REQUIRE( d1.place == 0 );
         auto d2(FixedPoint<8, -10>(0.5).ceil());
         REQUIRE( d2 == 1 );
-        REQUIRE( d2.get_width() == 2 );
-        REQUIRE( d2.get_place() == 0 );
+        REQUIRE( d2.width == 2 );
+        REQUIRE( d2.place == 0 );
     }
     SECTION( "Negative number" ) {
         // integer
         auto a(FixedPoint<8, 0>(-100.0).ceil());
         REQUIRE( a == -100 );
-        REQUIRE( a.get_width() == 8 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
         auto b(FixedPoint<16, 2>(-200.0).ceil());
         REQUIRE( b == -200 );
-        REQUIRE( b.get_width() == 16 );
-        REQUIRE( b.get_place() == 2 );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 2 );
         // with number after the decimal point
         auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).ceil());
         REQUIRE( c1 == -2 );
-        REQUIRE( c1.get_width() == 5 );
-        REQUIRE( c1.get_place() == 0 );
+        REQUIRE( c1.width == 5 );
+        REQUIRE( c1.place == 0 );
         auto c2(FixedPoint<8, -4>(-2.5).ceil());
         REQUIRE( c2 == -2 );
-        REQUIRE( c2.get_width() == 5 );
-        REQUIRE( c2.get_place() == 0 );
+        REQUIRE( c2.width == 5 );
+        REQUIRE( c2.place == 0 );
         // only number after the decimal point
         auto d1(FixedPoint<8, -10>(-1.0/1024).ceil());
         REQUIRE( d1 == 0 );
-        REQUIRE( d1.get_width() == 2 );
-        REQUIRE( d1.get_place() == 0 );
+        REQUIRE( d1.width == 2 );
+        REQUIRE( d1.place == 0 );
         auto d2(FixedPoint<8, -10>(-0.5).ceil());
         REQUIRE( d2 == 0 );
-        REQUIRE( d2.get_width() == 2 );
-        REQUIRE( d2.get_place() == 0 );
+        REQUIRE( d2.width == 2 );
+        REQUIRE( d2.place == 0 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<33, -1>(1E+10).ceil();
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -449,66 +449,66 @@ TEST_CASE( "floor()", "[FixedPoint]" ) {
         // integer
         auto a(FixedPoint<8, 0>(100.0).floor());
         REQUIRE( a == 100 );
-        REQUIRE( a.get_width() == 8 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
         auto b(FixedPoint<16, 2>(200.0).floor());
         REQUIRE( b == 200 );
-        REQUIRE( b.get_width() == 16 );
-        REQUIRE( b.get_place() == 2 );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 2 );
         // with number after the decimal point
         auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).floor());
         REQUIRE( c1 == 2 );
-        REQUIRE( c1.get_width() == 5 );
-        REQUIRE( c1.get_place() == 0 );
+        REQUIRE( c1.width == 5 );
+        REQUIRE( c1.place == 0 );
         auto c2(FixedPoint<8, -4>(2.5).floor());
         REQUIRE( c2 == 2 );
-        REQUIRE( c2.get_width() == 5 );
-        REQUIRE( c2.get_place() == 0 );
+        REQUIRE( c2.width == 5 );
+        REQUIRE( c2.place == 0 );
         // only number after the decimal point
         auto d1(FixedPoint<8, -10>(1.0/1024).floor());
         REQUIRE( d1 == 0 );
-        REQUIRE( d1.get_width() == 2 );
-        REQUIRE( d1.get_place() == 0 );
+        REQUIRE( d1.width == 2 );
+        REQUIRE( d1.place == 0 );
         auto d2(FixedPoint<8, -10>(0.5).floor());
         REQUIRE( d2 == 0 );
-        REQUIRE( d2.get_width() == 2 );
-        REQUIRE( d2.get_place() == 0 );
+        REQUIRE( d2.width == 2 );
+        REQUIRE( d2.place == 0 );
     }
     SECTION( "Negative number" ) {
         // integer
         auto a(FixedPoint<8, 0>(-100.0).floor());
         REQUIRE( a == -100 );
-        REQUIRE( a.get_width() == 8 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
         auto b(FixedPoint<16, 2>(-200.0).floor());
         REQUIRE( b == -200 );
-        REQUIRE( b.get_width() == 16 );
-        REQUIRE( b.get_place() == 2 );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 2 );
         // with number after the decimal point
         auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).floor());
         REQUIRE( c1 == -3 );
-        REQUIRE( c1.get_width() == 5 );
-        REQUIRE( c1.get_place() == 0 );
+        REQUIRE( c1.width == 5 );
+        REQUIRE( c1.place == 0 );
         auto c2(FixedPoint<8, -4>(-2.5).floor());
         REQUIRE( c2 == -3 );
-        REQUIRE( c2.get_width() == 5 );
-        REQUIRE( c2.get_place() == 0 );
+        REQUIRE( c2.width == 5 );
+        REQUIRE( c2.place == 0 );
         // only number after the decimal point
         auto d1(FixedPoint<8, -10>(-1.0/1024).floor());
         REQUIRE( d1 == -1 );
-        REQUIRE( d1.get_width() == 2 );
-        REQUIRE( d1.get_place() == 0 );
+        REQUIRE( d1.width == 2 );
+        REQUIRE( d1.place == 0 );
         auto d2(FixedPoint<8, -10>(-0.5).floor());
         REQUIRE( d2 == -1 );
-        REQUIRE( d2.get_width() == 2 );
-        REQUIRE( d2.get_place() == 0 );
+        REQUIRE( d2.width == 2 );
+        REQUIRE( d2.place == 0 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<33, -1>(-1E+10).floor();
         REQUIRE( a.get_significand() ==  -expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -518,59 +518,59 @@ TEST_CASE( "round_half_to_even()", "[FixedPoint]" ) {
             // integer
             auto a(FixedPoint<8, 0>(100.0).round_half_to_even());
             REQUIRE( a == 100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(200.0).round_half_to_even());
             REQUIRE( b == 200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).round_half_to_even());
             REQUIRE( c1 == 2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(2.5 + 1.0/16).round_half_to_even());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(1.0/128).round_half_to_even());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(0.5 + 1.0/128).round_half_to_even());
             REQUIRE( d == 1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
         SECTION( "Negative number" ) {
             // integer
             auto a(FixedPoint<8, 0>(-100.0).round_half_to_even());
             REQUIRE( a == -100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(-200.0).round_half_to_even());
             REQUIRE( b == -200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).round_half_to_even());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(-2.5 - 1.0/16).round_half_to_even());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-1.0/128).round_half_to_even());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(-0.5 - 1.0/128).round_half_to_even());
             REQUIRE( d == -1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
     }
     SECTION( "midway" ) {
@@ -579,44 +579,44 @@ TEST_CASE( "round_half_to_even()", "[FixedPoint]" ) {
             // upward
             auto c1(FixedPoint<8, -4>(3.5).round_half_to_even());
             REQUIRE( c1 == 4 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(2.5).round_half_to_even());
             REQUIRE( c2 == 2 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(0.5).round_half_to_even());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
         SECTION( "Negative number" ) {
             // with number after the decimal point
             // upward
             auto c1(FixedPoint<8, -4>(-2.5).round_half_to_even());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(-3.5).round_half_to_even());
             REQUIRE( c2 == -4 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-0.5).round_half_to_even());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_to_even();
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -626,59 +626,59 @@ TEST_CASE( "round_half_away_from_zero()", "[FixedPoint]" ) {
             // integer
             auto a(FixedPoint<8, 0>(100.0).round_half_away_from_zero());
             REQUIRE( a == 100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(200.0).round_half_away_from_zero());
             REQUIRE( b == 200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).round_half_away_from_zero());
             REQUIRE( c1 == 2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(2.5 + 1.0/16).round_half_away_from_zero());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(1.0/128).round_half_away_from_zero());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(0.5 + 1.0/128).round_half_away_from_zero());
             REQUIRE( d == 1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
         SECTION( "Negative number" ) {
             // integer
             auto a(FixedPoint<8, 0>(-100.0).round_half_away_from_zero());
             REQUIRE( a == -100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(-200.0).round_half_away_from_zero());
             REQUIRE( b == -200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).round_half_away_from_zero());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(-2.5 - 1.0/16).round_half_away_from_zero());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-1.0/128).round_half_away_from_zero());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(-0.5 - 1.0/128).round_half_away_from_zero());
             REQUIRE( d == -1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
     }
     SECTION( "midway" ) {
@@ -687,44 +687,44 @@ TEST_CASE( "round_half_away_from_zero()", "[FixedPoint]" ) {
             // upward
             auto c1(FixedPoint<8, -4>(3.5).round_half_away_from_zero());
             REQUIRE( c1 == 4 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(2.5).round_half_away_from_zero());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(0.5).round_half_away_from_zero());
             REQUIRE( d1 == 1 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
         SECTION( "Negative number" ) {
             // with number after the decimal point
             // upward
             auto c1(FixedPoint<8, -4>(-2.5).round_half_away_from_zero());
             REQUIRE( c1 == -3 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(-3.5).round_half_away_from_zero());
             REQUIRE( c2 == -4 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-0.5).round_half_away_from_zero());
             REQUIRE( d1 == -1 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_away_from_zero();
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -734,59 +734,59 @@ TEST_CASE( "round_half_toward_zero()", "[FixedPoint]" ) {
             // integer
             auto a(FixedPoint<8, 0>(100.0).round_half_toward_zero());
             REQUIRE( a == 100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(200.0).round_half_toward_zero());
             REQUIRE( b == 200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).round_half_toward_zero());
             REQUIRE( c1 == 2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(2.5 + 1.0/16).round_half_toward_zero());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(1.0/128).round_half_toward_zero());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(0.5 + 1.0/128).round_half_toward_zero());
             REQUIRE( d == 1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
         SECTION( "Negative number" ) {
             // integer
             auto a(FixedPoint<8, 0>(-100.0).round_half_toward_zero());
             REQUIRE( a == -100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(-200.0).round_half_toward_zero());
             REQUIRE( b == -200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).round_half_toward_zero());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(-2.5 - 1.0/16).round_half_toward_zero());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-1.0/128).round_half_toward_zero());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(-0.5 - 1.0/128).round_half_toward_zero());
             REQUIRE( d == -1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
     }
     SECTION( "midway" ) {
@@ -795,44 +795,44 @@ TEST_CASE( "round_half_toward_zero()", "[FixedPoint]" ) {
             // upward
             auto c1(FixedPoint<8, -4>(3.5).round_half_toward_zero());
             REQUIRE( c1 == 3 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(2.5).round_half_toward_zero());
             REQUIRE( c2 == 2 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(0.5).round_half_toward_zero());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
         SECTION( "Negative number" ) {
             // with number after the decimal point
             // upward
             auto c1(FixedPoint<8, -4>(-2.5).round_half_toward_zero());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(-3.5).round_half_toward_zero());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-0.5).round_half_toward_zero());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_toward_zero();
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -842,59 +842,59 @@ TEST_CASE( "round_half_up()", "[FixedPoint]" ) {
             // integer
             auto a(FixedPoint<8, 0>(100.0).round_half_up());
             REQUIRE( a == 100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(200.0).round_half_up());
             REQUIRE( b == 200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).round_half_up());
             REQUIRE( c1 == 2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(2.5 + 1.0/16).round_half_up());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(1.0/128).round_half_up());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(0.5 + 1.0/128).round_half_up());
             REQUIRE( d == 1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
         SECTION( "Negative number" ) {
             // integer
             auto a(FixedPoint<8, 0>(-100.0).round_half_up());
             REQUIRE( a == -100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(-200.0).round_half_up());
             REQUIRE( b == -200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).round_half_up());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(-2.5 - 1.0/16).round_half_up());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-1.0/128).round_half_up());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(-0.5 - 1.0/128).round_half_up());
             REQUIRE( d == -1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
     }
     SECTION( "midway" ) {
@@ -903,44 +903,44 @@ TEST_CASE( "round_half_up()", "[FixedPoint]" ) {
             // upward
             auto c1(FixedPoint<8, -4>(3.5).round_half_up());
             REQUIRE( c1 == 4 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(2.5).round_half_up());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(0.5).round_half_up());
             REQUIRE( d1 == 1 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
         SECTION( "Negative number" ) {
             // with number after the decimal point
             // upward
             auto c1(FixedPoint<8, -4>(-2.5).round_half_up());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(-3.5).round_half_up());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-0.5).round_half_up());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_up();
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -950,59 +950,59 @@ TEST_CASE( "round_half_down()", "[FixedPoint]" ) {
             // integer
             auto a(FixedPoint<8, 0>(100.0).round_half_down());
             REQUIRE( a == 100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(200.0).round_half_down());
             REQUIRE( b == 200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).round_half_down());
             REQUIRE( c1 == 2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(2.5 + 1.0/16).round_half_down());
             REQUIRE( c2 == 3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(1.0/128).round_half_down());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(0.5 + 1.0/128).round_half_down());
             REQUIRE( d == 1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
         SECTION( "Negative number" ) {
             // integer
             auto a(FixedPoint<8, 0>(-100.0).round_half_down());
             REQUIRE( a == -100 );
-            REQUIRE( a.get_width() == 8 );
-            REQUIRE( a.get_place() == 0 );
+            REQUIRE( a.width == 8 );
+            REQUIRE( a.place == 0 );
             auto b(FixedPoint<16, 2>(-200.0).round_half_down());
             REQUIRE( b == -200 );
-            REQUIRE( b.get_width() == 16 );
-            REQUIRE( b.get_place() == 2 );
+            REQUIRE( b.width == 16 );
+            REQUIRE( b.place == 2 );
             // with number after the decimal point
             auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).round_half_down());
             REQUIRE( c1 == -2 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             auto c2(FixedPoint<8, -4>(-2.5 - 1.0/16).round_half_down());
             REQUIRE( c2 == -3 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-1.0/128).round_half_down());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
             auto d(FixedPoint<8, -7>(-0.5 - 1.0/128).round_half_down());
             REQUIRE( d == -1 );
-            REQUIRE( d.get_width() == 2 );
-            REQUIRE( d.get_place() == 0 );
+            REQUIRE( d.width == 2 );
+            REQUIRE( d.place == 0 );
         }
     }
     SECTION( "midway" ) {
@@ -1011,44 +1011,44 @@ TEST_CASE( "round_half_down()", "[FixedPoint]" ) {
             // upward
             auto c1(FixedPoint<8, -4>(3.5).round_half_down());
             REQUIRE( c1 == 3 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(2.5).round_half_down());
             REQUIRE( c2 == 2 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(0.5).round_half_down());
             REQUIRE( d1 == 0 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
         SECTION( "Negative number" ) {
             // with number after the decimal point
             // upward
             auto c1(FixedPoint<8, -4>(-2.5).round_half_down());
             REQUIRE( c1 == -3 );
-            REQUIRE( c1.get_width() == 5 );
-            REQUIRE( c1.get_place() == 0 );
+            REQUIRE( c1.width == 5 );
+            REQUIRE( c1.place == 0 );
             // downward
             auto c2(FixedPoint<8, -4>(-3.5).round_half_down());
             REQUIRE( c2 == -4 );
-            REQUIRE( c2.get_width() == 5 );
-            REQUIRE( c2.get_place() == 0 );
+            REQUIRE( c2.width == 5 );
+            REQUIRE( c2.place == 0 );
             // only number after the decimal point
             auto d1(FixedPoint<8, -7>(-0.5).round_half_down());
             REQUIRE( d1 == -1 );
-            REQUIRE( d1.get_width() == 2 );
-            REQUIRE( d1.get_place() == 0 );
+            REQUIRE( d1.width == 2 );
+            REQUIRE( d1.place == 0 );
         }
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_down();
         REQUIRE( a.get_significand() ==  expected );
-        REQUIRE( a.get_width() == 33 );
-        REQUIRE( a.get_place() == 0 );
+        REQUIRE( a.width == 33 );
+        REQUIRE( a.place == 0 );
     }
 }
 
@@ -1080,23 +1080,23 @@ TEST_CASE( "set_significand()", "[FixedPoint]" ) {
     REQUIRE( a == 7.0 + 1.0/2 + 1.0/4 + 1.0/8 + 1.0/16 );
 }
 
-TEST_CASE( "get_width()", "[FixedPoint]" ) {
+TEST_CASE( "width", "[FixedPoint]" ) {
     // some value
-    REQUIRE( FixedPoint<8, -4>().get_width() == 8 );
+    REQUIRE( FixedPoint<8, -4>::width == 8 );
     // maximum value
-    REQUIRE( FixedPoint<54, -4>().get_width() == 54 );
+    REQUIRE( FixedPoint<54, -4>::width == 54 );
     // minimum value
-    REQUIRE( FixedPoint<2, -4>().get_width() == 2 );
+    REQUIRE( FixedPoint<2, -4>::width == 2 );
 }
 
-TEST_CASE( "get_place()", "[FixedPoint]" ) {
+TEST_CASE( "place", "[FixedPoint]" ) {
     // some value
-    REQUIRE( FixedPoint<8, 3>().get_place() == 3 );
-    REQUIRE( FixedPoint<8, -4>().get_place() == -4 );
+    REQUIRE( FixedPoint<8, 3>::place == 3 );
+    REQUIRE( FixedPoint<8, -4>::place == -4 );
     // maximum value
-    REQUIRE( FixedPoint<2, 1022>().get_place() == 1022 );
-    REQUIRE( FixedPoint<10, 1014>().get_place() == 1014 );
+    REQUIRE( FixedPoint<2, 1022>::place == 1022 );
+    REQUIRE( FixedPoint<10, 1014>::place == 1014 );
     // minimum value
-    REQUIRE( FixedPoint<2, -1022>().get_place() == -1022 );
-    REQUIRE( FixedPoint<10, -1022>().get_place() == -1022 );
+    REQUIRE( FixedPoint<2, -1022>::place == -1022 );
+    REQUIRE( FixedPoint<10, -1022>::place == -1022 );
 }

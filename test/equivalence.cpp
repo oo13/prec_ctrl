@@ -156,7 +156,7 @@ TEST_CASE( "FixedPoint should be equivalent to double", "[equivalence]" ) {
         REQUIRE( sum_double == 0 );
 
         // FixedPoint version
-        REQUIRE( sum2.get_place() == PLACE_r );
+        REQUIRE( sum2.place == PLACE_r );
         significand_t<WIDTH_sum> sum_significand = sum2.get_significand();
         for (size_t i=0; i<n2.size(); ++i) {
             const size_t num = static_cast<double>(n2[i]);
