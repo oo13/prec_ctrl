@@ -399,23 +399,48 @@ namespace prec_ctrl {
         }
 
 
-        /** ceil function.
-            \return The minimum integer more than or equal this.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+        /* Rounding functions */
+    private:
+        /** Common part of the rounding function.
+            \tparam FUNC The type of a function to adjust a significand.
+            \param [in] func The function to adjust a significand.
+            \return The rounded value.
         */
-        constexpr integer_part_t<1> ceil() const noexcept
+        template<typename FUNC>
+        constexpr integer_part_t<1> round_common(FUNC &&func) const noexcept
         {
             integer_part_t<1> result;
             if constexpr (PLACE >= 0) {
                 // this is an integer.
                 result.significand = significand;
             } else {
-                constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 - PLACE>;
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                result.significand = (significand_ext + FRAC_MASK) >> -PLACE;
+                result.significand = func(significand) >> -PLACE;
             }
             return result;
+        }
+
+        /** The type of an intermediate significand used for rounding.
+            \note It's used only if PLACE < 0.
+
+            It has the width of integer_part_t<1> as the integer part and -PLACE as the width under the decimal point.
+        */
+        using round_sig_t = significand_t<integer_part_t<1>::width + (PLACE < 0 ? -PLACE : 0)>;
+
+    public:
+        /** ceil function.
+            \return The minimum integer more than or equal this.
+            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+        */
+        constexpr integer_part_t<1> ceil() const noexcept
+        {
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 - PLACE>;
+                    return s + FRAC_MASK;
+                }
+            });
         }
 
         /** floor function.
@@ -424,16 +449,13 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> floor() const noexcept
         {
-            integer_part_t<1> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
-                result.significand = significand;
-            } else {
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                result.significand = significand_ext >> -PLACE;
-            }
-            return result;
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    return s;
+                }
+            });
         }
 
         /** Round to nearest, ties to even.
@@ -444,18 +466,15 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_to_even() const noexcept
         {
-            integer_part_t<1> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
-                result.significand = significand;
-            } else {
-                constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<-PLACE>;
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                const auto int_lsb = (significand_ext >> -PLACE) & 1;
-                result.significand = (significand_ext + HALF_MINUS_1 + int_lsb) >> -PLACE;
-            }
-            return result;
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<-PLACE>;
+                    const auto int_lsb = (s >> -PLACE) & 1;
+                    return s + HALF_MINUS_1 + int_lsb;
+                }
+            });
         }
 
         /** Round to nearest, ties away from zero.
@@ -466,18 +485,15 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_away_from_zero() const noexcept
         {
-            integer_part_t<1> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
-                result.significand = significand;
-            } else {
-                constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                const auto sign_bit = (significand_ext >> (WIDTH - 1)) & 1;
-                result.significand = (significand_ext + HALF - sign_bit) >> -PLACE;
-            }
-            return result;
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
+                    const auto sign_bit = (s >> (WIDTH - 1)) & 1;
+                    return s + HALF - sign_bit;
+                }
+            });
         }
 
         /** Round to nearest, ties to zero.
@@ -488,18 +504,15 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_toward_zero() const noexcept
         {
-            integer_part_t<1> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
-                result.significand = significand;
-            } else {
-                constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                const auto sign_bit = (significand_ext >> (WIDTH - 1)) & 1;
-                result.significand = (significand_ext + HALF - (sign_bit ^ 1)) >> -PLACE;
-            }
-            return result;
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
+                    const auto sign_bit = (s >> (WIDTH - 1)) & 1;
+                    return s + HALF - (sign_bit ^ 1);
+                }
+            });
         }
 
         /** Round to nearest, ties to upper.
@@ -510,17 +523,14 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_up() const noexcept
         {
-            integer_part_t<1> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
-                result.significand = significand;
-            } else {
-                constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                result.significand = (significand_ext + HALF) >> -PLACE;
-            }
-            return result;
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
+                    return s + HALF;
+                }
+            });
         }
 
         /** Round to nearest, ties to lower.
@@ -531,17 +541,14 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_down() const noexcept
         {
-            integer_part_t<1> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
-                result.significand = significand;
-            } else {
-                constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<-PLACE>;
-                const significand_t<((WIDTH + PLACE) <= 1) ? 2 - PLACE : WIDTH + 1>
-                    significand_ext = significand;
-                result.significand = (significand_ext + HALF_MINUS_1) >> -PLACE;
-            }
-            return result;
+            return round_common([](round_sig_t s) -> round_sig_t {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<-PLACE>;
+                    return s + HALF_MINUS_1;
+                }
+            });
         }
 
 
