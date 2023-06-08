@@ -435,6 +435,16 @@ TEST_CASE( "ceil()", "[FixedPoint]" ) {
         REQUIRE( d2.width == 2 );
         REQUIRE( d2.place == 0 );
     }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).ceil());
+        REQUIRE( a == 128 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).ceil());
+        REQUIRE( b == -127 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
+    }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<33, -1>(1E+10).ceil();
@@ -502,6 +512,16 @@ TEST_CASE( "floor()", "[FixedPoint]" ) {
         REQUIRE( d2 == -1 );
         REQUIRE( d2.width == 2 );
         REQUIRE( d2.place == 0 );
+    }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).floor());
+        REQUIRE( a == 127 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).floor());
+        REQUIRE( b == -128 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
@@ -611,6 +631,16 @@ TEST_CASE( "round_half_to_even()", "[FixedPoint]" ) {
             REQUIRE( d1.place == 0 );
         }
     }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).round_half_to_even());
+        REQUIRE( a == 128 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).round_half_to_even());
+        REQUIRE( b == -128 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
+    }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_to_even();
@@ -718,6 +748,16 @@ TEST_CASE( "round_half_away_from_zero()", "[FixedPoint]" ) {
             REQUIRE( d1.width == 2 );
             REQUIRE( d1.place == 0 );
         }
+    }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).round_half_away_from_zero());
+        REQUIRE( a == 128 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).round_half_away_from_zero());
+        REQUIRE( b == -128 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
@@ -827,6 +867,16 @@ TEST_CASE( "round_half_toward_zero()", "[FixedPoint]" ) {
             REQUIRE( d1.place == 0 );
         }
     }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).round_half_toward_zero());
+        REQUIRE( a == 128 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).round_half_toward_zero());
+        REQUIRE( b == -128 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
+    }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_toward_zero();
@@ -935,6 +985,16 @@ TEST_CASE( "round_half_up()", "[FixedPoint]" ) {
             REQUIRE( d1.place == 0 );
         }
     }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).round_half_up());
+        REQUIRE( a == 128 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).round_half_up());
+        REQUIRE( b == -128 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
+    }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
         auto a = FixedPoint<34, -2>(1E+10).round_half_up();
@@ -1042,6 +1102,16 @@ TEST_CASE( "round_half_down()", "[FixedPoint]" ) {
             REQUIRE( d1.width == 2 );
             REQUIRE( d1.place == 0 );
         }
+    }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).round_half_down());
+        REQUIRE( a == 128 );
+        REQUIRE( a.width == 9 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).round_half_down());
+        REQUIRE( b == -128 );
+        REQUIRE( b.width == 9 );
+        REQUIRE( b.place == 0 );
     }
     SECTION( "over 32 bits" ) {
         const std::int_fast64_t expected = static_cast<std::int_fast64_t>(0x80000000u);
