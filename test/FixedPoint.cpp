@@ -532,6 +532,84 @@ TEST_CASE( "floor()", "[FixedPoint]" ) {
     }
 }
 
+TEST_CASE( "trunc()", "[FixedPoint]" ) {
+    SECTION( "Positive number" ) {
+        // integer
+        auto a(FixedPoint<8, 0>(100.0).trunc());
+        REQUIRE( a == 100 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, 2>(200.0).trunc());
+        REQUIRE( b == 200 );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 2 );
+        // with number after the decimal point
+        auto c1(FixedPoint<8, -4>(2.0 + 1.0/16).trunc());
+        REQUIRE( c1 == 2 );
+        REQUIRE( c1.width == 4 );
+        REQUIRE( c1.place == 0 );
+        auto c2(FixedPoint<8, -4>(2.5).trunc());
+        REQUIRE( c2 == 2 );
+        REQUIRE( c2.width == 4 );
+        REQUIRE( c2.place == 0 );
+        // only number after the decimal point
+        auto d1(FixedPoint<8, -10>(1.0/1024).trunc());
+        REQUIRE( d1 == 0 );
+        REQUIRE( d1.width == 2 );
+        REQUIRE( d1.place == 0 );
+        auto d2(FixedPoint<8, -10>(0.5).trunc());
+        REQUIRE( d2 == 0 );
+        REQUIRE( d2.width == 2 );
+        REQUIRE( d2.place == 0 );
+    }
+    SECTION( "Negative number" ) {
+        // integer
+        auto a(FixedPoint<8, 0>(-100.0).trunc());
+        REQUIRE( a == -100 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, 2>(-200.0).trunc());
+        REQUIRE( b == -200 );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 2 );
+        // with number after the decimal point
+        auto c1(FixedPoint<8, -4>(-2.0 - 1.0/16).trunc());
+        REQUIRE( c1 == -2 );
+        REQUIRE( c1.width == 4 );
+        REQUIRE( c1.place == 0 );
+        auto c2(FixedPoint<8, -4>(-2.5).trunc());
+        REQUIRE( c2 == -2 );
+        REQUIRE( c2.width == 4 );
+        REQUIRE( c2.place == 0 );
+        // only number after the decimal point
+        auto d1(FixedPoint<8, -10>(-1.0/1024).trunc());
+        REQUIRE( d1 == 0 );
+        REQUIRE( d1.width == 2 );
+        REQUIRE( d1.place == 0 );
+        auto d2(FixedPoint<8, -10>(-0.5).trunc());
+        REQUIRE( d2 == 0 );
+        REQUIRE( d2.width == 2 );
+        REQUIRE( d2.place == 0 );
+    }
+    SECTION( "Min/Max" ) {
+        auto a(FixedPoint<16, -8>(128.0).trunc());
+        REQUIRE( a == 127 );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == 0 );
+        auto b(FixedPoint<16, -8>(-128.0).trunc());
+        REQUIRE( b == -127 );
+        REQUIRE( b.width == 8 );
+        REQUIRE( b.place == 0 );
+    }
+    SECTION( "under 32 bits" ) {
+        const std::int_fast64_t expected = static_cast<std::int_fast32_t>(0x7FFFFFFFu);
+        auto a = FixedPoint<33, -1>(-1E+10).trunc();
+        REQUIRE( a.get_significand() ==  -expected );
+        REQUIRE( a.width == 32 );
+        REQUIRE( a.place == 0 );
+    }
+}
+
 TEST_CASE( "round_half_to_even()", "[FixedPoint]" ) {
     SECTION( "not midway" ) {
         SECTION( "Positive number" ) {

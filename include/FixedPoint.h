@@ -402,14 +402,15 @@ namespace prec_ctrl {
         /* Rounding functions */
     private:
         /** Common part of the rounding function.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side.
             \tparam FUNC The type of a function to adjust a significand.
             \param [in] func The function to adjust a significand.
             \return The rounded value.
         */
-        template<typename FUNC>
-        constexpr integer_part_t<1> round_common(FUNC &&func) const noexcept
+        template<int EXTRA_WIDTH, typename FUNC>
+        constexpr integer_part_t<EXTRA_WIDTH> round_common(FUNC &&func) const noexcept
         {
-            integer_part_t<1> result;
+            integer_part_t<EXTRA_WIDTH> result;
             if constexpr (PLACE >= 0) {
                 // this is an integer.
                 result.significand = significand;
@@ -420,11 +421,14 @@ namespace prec_ctrl {
         }
 
         /** The type of an intermediate significand used for rounding.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side.
             \note It's used only if PLACE < 0.
 
-            It has the width of integer_part_t<1> as the integer part and -PLACE as the width under the decimal point.
+            It has the width of integer_part_t<EXTRA_WIDTH> as the integer part and -PLACE as the width under the decimal point.
         */
-        using round_sig_t = significand_t<integer_part_t<1>::width + (PLACE < 0 ? -PLACE : 0)>;
+        template<int EXTRA_WIDTH>
+        using round_sig_t = significand_t<integer_part_t<EXTRA_WIDTH>::width
+                                          + (PLACE < 0 ? -PLACE : 0)>;
 
     public:
         /** ceil function.
@@ -433,7 +437,7 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> ceil() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
@@ -449,11 +453,30 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> floor() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
                     return s;
+                }
+            });
+        }
+
+        /** trunc function.
+            \return The nearest integer that has the absolute value less than or equal the absolute value of this.
+        */
+        constexpr integer_part_t<0> trunc() const noexcept
+        {
+            return round_common<0>([](round_sig_t<0> s) -> round_sig_t<0> {
+                if constexpr (PLACE >= 0) {
+                    return 0;
+                } else {
+                    if (s >= 0) {
+                        return s;
+                    } else {
+                        constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 - PLACE>;
+                        return s + FRAC_MASK;
+                    }
                 }
             });
         }
@@ -466,7 +489,7 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_to_even() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
@@ -485,7 +508,7 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_away_from_zero() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
@@ -504,7 +527,7 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_toward_zero() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
@@ -523,7 +546,7 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_up() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
@@ -541,7 +564,7 @@ namespace prec_ctrl {
         */
         constexpr integer_part_t<1> round_half_down() const noexcept
         {
-            return round_common([](round_sig_t s) -> round_sig_t {
+            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
                 if constexpr (PLACE >= 0) {
                     return 0;
                 } else {
