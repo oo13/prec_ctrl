@@ -12,7 +12,7 @@ target_link_libraries(test_prec_ctrl Catch2::Catch2)
 target_include_directories(test_prec_ctrl PRIVATE ../include)
 target_compile_features(test_prec_ctrl PRIVATE cxx_std_17)
 target_compile_definitions(test_prec_ctrl PRIVATE CATCH_CONFIG_ENABLE_BENCHMARKING)
-set(CMAKE_CXX_FLAGS "-Wall -pedantic -O3 -fsanitize=float-cast-overflow")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -W -pedantic -O3 -fsanitize=undefined -fsanitize=float-cast-overflow")
 
 include(CTest)
 include(Catch)

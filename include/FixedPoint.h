@@ -149,7 +149,8 @@ namespace prec_ctrl {
          */
         template<int WIDTH_SRC, int PLACE_SRC>
         constexpr explicit FixedPoint(const FixedPoint<WIDTH_SRC, PLACE_SRC> &src) noexcept
-            : significand(static_cast<decltype(significand)>(src.significand) << (PLACE_SRC - PLACE))
+            : significand(static_cast<decltype(significand)>(src.significand)
+                          * (static_cast<decltype(significand)>(1) << (PLACE_SRC - PLACE)))
         {
             static_assert(PLACE <= PLACE_SRC
                           && WIDTH + PLACE >= WIDTH_SRC + PLACE_SRC,
@@ -415,7 +416,15 @@ namespace prec_ctrl {
                 // this is an integer.
                 result.significand = significand;
             } else {
-                result.significand = func(significand) >> -PLACE;
+                const auto s = func(significand);
+
+                // floor(s  / 2**-PLACE), that is, Shift Right Arithmetic
+                // GCC and clang can optimize this to a single SRA operation.
+                if (s >= 0) {
+                    result.significand = s >> -PLACE;
+                } else {
+                    result.significand = -(-(s + 1) >> -PLACE) - 1;
+                }
             }
             return result;
         }
