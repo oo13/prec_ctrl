@@ -198,7 +198,7 @@ namespace prec_ctrl {
 
         /** Convert a value into double.
             \return The value as double.
-            \note The conversion isn't explicit because the new value is exactly equal to this.
+            \note The conversion is implicit because the new value is exactly equal to this.
         */
 #if __cplusplus > 202002L
         // for C++23
@@ -228,7 +228,7 @@ namespace prec_ctrl {
 
         /** Unary - operator.
             \return The value multiplied by -1.
-            \note This operator never causes overflow.
+            \note This operator never causes overflow. The minimum value of FixedPoint is -1 * the maximum value.
          */
         constexpr FixedPoint<WIDTH, PLACE> operator-() const noexcept
         {
@@ -442,7 +442,7 @@ namespace prec_ctrl {
     public:
         /** ceil function.
             \return The minimum integer more than or equal this.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
         */
         constexpr integer_part_t<1> ceil() const noexcept
         {
@@ -458,7 +458,7 @@ namespace prec_ctrl {
 
         /** floor function.
             \return The maximum integer less than or equal this.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
         */
         constexpr integer_part_t<1> floor() const noexcept
         {
@@ -492,7 +492,7 @@ namespace prec_ctrl {
 
         /** Round to nearest, ties to even.
             \return The nearest integer of this, basically.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
 
             This function convert a value to the nearest integer. It converts this to nearest even integer if the value falls midway. It seems to be recommended by IEEE-745.
         */
@@ -511,7 +511,7 @@ namespace prec_ctrl {
 
         /** Round to nearest, ties away from zero.
             \return The nearest integer of this, basically.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
 
             This function convert a value to the nearest integer. It converts this to nearest integer away from zero if the value falls midway.
         */
@@ -530,7 +530,7 @@ namespace prec_ctrl {
 
         /** Round to nearest, ties to zero.
             \return The nearest integer of this, basically.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
 
             This function convert a value to the nearest integer. It converts this to nearest integer toward zero if the value falls midway.
         */
@@ -549,7 +549,7 @@ namespace prec_ctrl {
 
         /** Round to nearest, ties to upper.
             \return The nearest integer of this, basically.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
 
             This function convert a value to the nearest integer. It converts this to nearest upper integer if the value falls midway.
         */
@@ -567,7 +567,7 @@ namespace prec_ctrl {
 
         /** Round to nearest, ties to lower.
             \return The nearest integer of this, basically.
-            \note This function may cause overflow, so it increases one bit than the integer part of this type.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
 
             This function convert a value to the nearest integer. It converts this to nearest lower integer if the value falls midway.
         */
