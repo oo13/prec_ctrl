@@ -7,7 +7,11 @@ Files: *
 Copyright: © 2022 OOTA, Masato
 License: GPL-3.0-or-later
 
-Files: prec_ctrl.doxygen test/CMakeLists.txt
+Files:
+ prec_ctrl.doxygen
+ test/CMakeLists.txt
+ test/meson.build
+ test/meson_options.txt
 Copyright: © 2022 OOTA, Masato
 License: CC0-1.0
 

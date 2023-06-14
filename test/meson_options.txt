@@ -1,0 +1,7 @@
+# Build settings for Unit Test of prec_ctrl.
+# Copyright © 2023 OOTA, Masato
+# This is published under CC0 1.0.
+# For more information, see CC0 1.0 Universal (CC0 1.0) at <https://creativecommons.org/publicdomain/zero/1.0/legalcode>.
+
+option('sanitize-undefined', type: 'boolean', value: true)
+option('sanitize-float-cast-overflow', type: 'boolean', value: true)

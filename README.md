@@ -128,15 +128,26 @@ Use doxygen. I tested the generation in doxygen 1.9.4.
 This library includes some unit test codes. If you want to run it, the following programs are needed:
 
 - Catch2 (Tested in version 2.13.10)
-- cmake  (Tested in Version 3.24.3)
+- cmake  (Tested in Version 3.24.3) or meson (Tested in Version 1.0.1)
 
+cmake:
 ```
 % cd prec_ctrl/test
 % cmake -DCMAKE_BUILD_TYPE=Release -B build .
 % cd build
 % make
 % ./test_prec_ctrl
-% ./test_prec_ctrl '[!benchmark]' # For benchmark
+% ./test_prec_ctrl '[!benchmark]' ; # For benchmark (Note that sanitizers are enabled)
+```
+
+meson:
+```
+% cd prec_ctrl/test
+% meson setup build
+% cd build
+% meson compile
+% meson test ; # or ninja test
+% meson test --benchmark ; # or ninja benchmark (no sanitizers are enabled)
 ```
 
 ### Example for Some Results
