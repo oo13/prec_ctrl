@@ -76,6 +76,7 @@ namespace prec_ctrl {
         static constexpr int place = PLACE;
 
 
+    private:
         /** The computation of a bit width for superset_t and addtion_result_t.
             \param [in] width2 Another WIDTH
             \param [in] place2 Another PLACE
@@ -110,28 +111,6 @@ namespace prec_ctrl {
             = FixedPoint<superset_width(WIDTH2, PLACE2, (PLACE >= WIDTH2 + PLACE2 - 1 || PLACE2 >= WIDTH + PLACE - 1) ? 0 : 1),
                          std::min(PLACE, PLACE2)>;
 
-        /** The type of the result that rounded at the place LSB_PLACE.
-            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
-            \tparam LSB_PLACE the LSB place of the result.
-
-            The type can contain the result that rounded at the place LSB_PLACE, and also it has EXTRA_WIDTH bits as the extra bits on the MSB side for carrying up. If this type has no bits at the place upper than or equal LSB_PLACE, the type has at least 2 bits because the minimum WIDTH is 2. If this type has no bits at the place lesser than LSB_PLACE, the result is this type (without EXTRA_WIDTH).
-        */
-        template<int EXTRA_WIDTH, int LSB_PLACE>
-        using round_result_t
-            = FixedPoint<(PLACE >= LSB_PLACE) ?
-                         WIDTH :
-                         (WIDTH + PLACE <= 1 + LSB_PLACE) ?
-                             std::max(2, 1 + EXTRA_WIDTH) :
-                             WIDTH + PLACE + EXTRA_WIDTH - LSB_PLACE,
-                         std::max(PLACE, LSB_PLACE)>;
-
-        /** The type can contain the integer part of this type.
-            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
-
-            The type can contain the integer part of this type, and also it has EXTRA_WIDTH bits as the extra bits on the MSB side for carrying up. If this type has no integer part, the type is at least a 2-bit integer because the minimum WIDTH is 2. If this type has only an integer part, the result is this type (without EXTRA_WIDTH).
-        */
-        template<int EXTRA_WIDTH>
-        using integer_part_t = round_result_t<EXTRA_WIDTH, 0>;
 
     public:
         /* Constructors, Assignments, and conversions */
@@ -301,9 +280,9 @@ namespace prec_ctrl {
         operator*(const FixedPoint<WIDTH2, PLACE2> &op2) const noexcept
         {
             FixedPoint<WIDTH + WIDTH2 - 1, PLACE + PLACE2> result;
-            using result_t = decltype(result.significand);
-            const result_t significand1 = significand;
-            const result_t significand2 = op2.significand;
+            using result_sig_t = decltype(result.significand);
+            const result_sig_t significand1 = significand;
+            const result_sig_t significand2 = op2.significand;
             result.significand = significand1 * significand2;
             return result;
         }
@@ -411,6 +390,21 @@ namespace prec_ctrl {
 
         /* Rounding functions */
     private:
+        /** The type of the result that rounded at the place LSB_PLACE.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
+            \tparam LSB_PLACE the LSB place of the result.
+
+            The type can contain the result that rounded at the place LSB_PLACE, and also it has EXTRA_WIDTH bits as the extra bits on the MSB side for carrying up. If this type has no bits at the place upper than or equal LSB_PLACE, the type has at least 2 bits because the minimum WIDTH is 2. If this type has no bits at the place lesser than LSB_PLACE, the result is this type (without EXTRA_WIDTH).
+        */
+        template<int EXTRA_WIDTH, int LSB_PLACE>
+        using round_result_t
+            = FixedPoint<(PLACE >= LSB_PLACE) ?
+                         WIDTH :
+                         (WIDTH + PLACE <= 1 + LSB_PLACE) ?
+                             std::max(2, 1 + EXTRA_WIDTH) :
+                             WIDTH + PLACE + EXTRA_WIDTH - LSB_PLACE,
+                         std::max(PLACE, LSB_PLACE)>;
+
         /** Common part of the rounding function.
             \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
             \tparam LSB_PLACE the LSB place of the result.
