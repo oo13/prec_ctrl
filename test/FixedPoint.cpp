@@ -452,6 +452,44 @@ TEST_CASE( "ceil()", "[FixedPoint]" ) {
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
     }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).ceil<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).ceil<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).ceil<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).ceil<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).ceil<6>());
+        REQUIRE( e1 == 64.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).ceil<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).ceil<-1>());
+        REQUIRE( f == 10.5 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).ceil<2>());
+        REQUIRE( g == -8.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+    }
 }
 
 TEST_CASE( "floor()", "[FixedPoint]" ) {
@@ -530,6 +568,44 @@ TEST_CASE( "floor()", "[FixedPoint]" ) {
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
     }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).floor<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).floor<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).floor<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).floor<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).floor<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).floor<6>());
+        REQUIRE( e2 == -64.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).floor<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).floor<2>());
+        REQUIRE( g == -12.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+    }
 }
 
 TEST_CASE( "trunc()", "[FixedPoint]" ) {
@@ -607,6 +683,44 @@ TEST_CASE( "trunc()", "[FixedPoint]" ) {
         REQUIRE( a.get_significand() ==  -expected );
         REQUIRE( a.width == 32 );
         REQUIRE( a.place == 0 );
+    }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).trunc<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).trunc<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).trunc<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).trunc<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).trunc<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).trunc<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).trunc<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 6 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).trunc<2>());
+        REQUIRE( g == -8.0 );
+        REQUIRE( g.width == 3 );
+        REQUIRE( g.place == 2 );
     }
 }
 
@@ -726,6 +840,52 @@ TEST_CASE( "round_half_to_even()", "[FixedPoint]" ) {
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
     }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).round_half_to_even<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).round_half_to_even<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).round_half_to_even<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).round_half_to_even<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).round_half_to_even<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).round_half_to_even<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).round_half_to_even<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).round_half_to_even<2>());
+        REQUIRE( g == -12.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+        auto h1(FixedPoint<8, -3>(-10.25).round_half_to_even<-1>());
+        REQUIRE( h1 == -10.0 );
+        REQUIRE( h1.width == 7 );
+        REQUIRE( h1.place == -1 );
+        auto h2(FixedPoint<16, 3>(24.0).round_half_to_even<4>());
+        REQUIRE( h2 == 32.0 );
+        REQUIRE( h2.width == 16 );
+        REQUIRE( h2.place == 4 );
+    }
 }
 
 TEST_CASE( "round_half_away_from_zero()", "[FixedPoint]" ) {
@@ -843,6 +1003,52 @@ TEST_CASE( "round_half_away_from_zero()", "[FixedPoint]" ) {
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
+    }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).round_half_away_from_zero<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).round_half_away_from_zero<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).round_half_away_from_zero<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).round_half_away_from_zero<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).round_half_away_from_zero<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).round_half_away_from_zero<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).round_half_away_from_zero<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).round_half_away_from_zero<2>());
+        REQUIRE( g == -12.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+        auto h1(FixedPoint<8, -3>(-10.25).round_half_away_from_zero<-1>());
+        REQUIRE( h1 == -10.5 );
+        REQUIRE( h1.width == 7 );
+        REQUIRE( h1.place == -1 );
+        auto h2(FixedPoint<16, 3>(24.0).round_half_away_from_zero<4>());
+        REQUIRE( h2 == 32.0 );
+        REQUIRE( h2.width == 16 );
+        REQUIRE( h2.place == 4 );
     }
 }
 
@@ -962,6 +1168,52 @@ TEST_CASE( "round_half_toward_zero()", "[FixedPoint]" ) {
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
     }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).round_half_toward_zero<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).round_half_toward_zero<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).round_half_toward_zero<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).round_half_toward_zero<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).round_half_toward_zero<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).round_half_toward_zero<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).round_half_toward_zero<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).round_half_toward_zero<2>());
+        REQUIRE( g == -12.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+        auto h1(FixedPoint<8, -3>(-10.25).round_half_toward_zero<-1>());
+        REQUIRE( h1 == -10.0 );
+        REQUIRE( h1.width == 7 );
+        REQUIRE( h1.place == -1 );
+        auto h2(FixedPoint<16, 3>(24.0).round_half_toward_zero<4>());
+        REQUIRE( h2 == 16.0 );
+        REQUIRE( h2.width == 16 );
+        REQUIRE( h2.place == 4 );
+    }
 }
 
 TEST_CASE( "round_half_up()", "[FixedPoint]" ) {
@@ -1080,6 +1332,52 @@ TEST_CASE( "round_half_up()", "[FixedPoint]" ) {
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
     }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).round_half_up<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).round_half_up<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).round_half_up<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).round_half_up<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).round_half_up<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).round_half_up<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).round_half_up<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).round_half_up<2>());
+        REQUIRE( g == -12.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+        auto h1(FixedPoint<8, -3>(-10.25).round_half_up<-1>());
+        REQUIRE( h1 == -10.0 );
+        REQUIRE( h1.width == 7 );
+        REQUIRE( h1.place == -1 );
+        auto h2(FixedPoint<16, 3>(24.0).round_half_up<4>());
+        REQUIRE( h2 == 32.0 );
+        REQUIRE( h2.width == 16 );
+        REQUIRE( h2.place == 4 );
+    }
 }
 
 TEST_CASE( "round_half_down()", "[FixedPoint]" ) {
@@ -1197,6 +1495,52 @@ TEST_CASE( "round_half_down()", "[FixedPoint]" ) {
         REQUIRE( a.get_significand() ==  expected );
         REQUIRE( a.width == 33 );
         REQUIRE( a.place == 0 );
+    }
+    SECTION( "LSB place" ) {
+        // PLACE > LSB_PLACE
+        auto a(FixedPoint<8, -2>(10.1).round_half_down<-3>());
+        REQUIRE( a == FixedPoint<8, -2>(10.1) );
+        REQUIRE( a.width == 8 );
+        REQUIRE( a.place == -2 );
+        auto b(FixedPoint<16, 4>(-200.0).round_half_down<2>());
+        REQUIRE( b == FixedPoint<16, 4>(-200.0) );
+        REQUIRE( b.width == 16 );
+        REQUIRE( b.place == 4 );
+        // PLACE == LSB_PLACE
+        auto c(FixedPoint<8, -2>(10.1).round_half_down<-2>());
+        REQUIRE( c == FixedPoint<8, -2>(10.1) );
+        REQUIRE( c.width == 8 );
+        REQUIRE( c.place == -2 );
+        auto d(FixedPoint<16, 3>(-200.0).round_half_down<3>());
+        REQUIRE( d == FixedPoint<16, 3>(-200.0) );
+        REQUIRE( d.width == 16 );
+        REQUIRE( d.place == 3 );
+        // MSB PLACE < LSB_PLACE
+        auto e1(FixedPoint<8, -3>(10.1).round_half_down<6>());
+        REQUIRE( e1 == 0.0 );
+        REQUIRE( e1.width == 2 );
+        REQUIRE( e1.place == 6 );
+        auto e2(FixedPoint<8, -3>(-10.1).round_half_down<6>());
+        REQUIRE( e2 == 0.0 );
+        REQUIRE( e2.width == 2 );
+        REQUIRE( e2.place == 6 );
+        // LSB_PLACE != 0
+        auto f(FixedPoint<8, -3>(10.1).round_half_down<-1>());
+        REQUIRE( f == 10.0 );
+        REQUIRE( f.width == 7 );
+        REQUIRE( f.place == -1 );
+        auto g(FixedPoint<8, -3>(-10.1).round_half_down<2>());
+        REQUIRE( g == -12.0 );
+        REQUIRE( g.width == 4 );
+        REQUIRE( g.place == 2 );
+        auto h1(FixedPoint<8, -3>(-10.25).round_half_down<-1>());
+        REQUIRE( h1 == -10.5 );
+        REQUIRE( h1.width == 7 );
+        REQUIRE( h1.place == -1 );
+        auto h2(FixedPoint<16, 3>(24.0).round_half_down<4>());
+        REQUIRE( h2 == 16.0 );
+        REQUIRE( h2.width == 16 );
+        REQUIRE( h2.place == 4 );
     }
 }
 

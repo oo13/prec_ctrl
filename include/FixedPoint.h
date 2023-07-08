@@ -110,19 +110,28 @@ namespace prec_ctrl {
             = FixedPoint<superset_width(WIDTH2, PLACE2, (PLACE >= WIDTH2 + PLACE2 - 1 || PLACE2 >= WIDTH + PLACE - 1) ? 0 : 1),
                          std::min(PLACE, PLACE2)>;
 
-        /** The type can contain the integer part of this type.
-            \tparam EXTRA_WIDTH the extra bits on the MSB side.
+        /** The type of the result that rounded at the place LSB_PLACE.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
+            \tparam LSB_PLACE the LSB place of the result.
 
-            The type can contain the integer part of this type, and also it has EXTRA_WIDTH bits as the extra bits on the MSB side. If this type has no integer part, the type is at least a 2-bit integer because the minimum WIDTH is 2. If this type has only an integer part, the result is this type.
+            The type can contain the result that rounded at the place LSB_PLACE, and also it has EXTRA_WIDTH bits as the extra bits on the MSB side for carrying up. If this type has no bits at the place upper than or equal LSB_PLACE, the type has at least 2 bits because the minimum WIDTH is 2. If this type has no bits at the place lesser than LSB_PLACE, the result is this type (without EXTRA_WIDTH).
+        */
+        template<int EXTRA_WIDTH, int LSB_PLACE>
+        using round_result_t
+            = FixedPoint<(PLACE >= LSB_PLACE) ?
+                         WIDTH :
+                         (WIDTH + PLACE <= 1 + LSB_PLACE) ?
+                             std::max(2, 1 + EXTRA_WIDTH) :
+                             WIDTH + PLACE + EXTRA_WIDTH - LSB_PLACE,
+                         std::max(PLACE, LSB_PLACE)>;
+
+        /** The type can contain the integer part of this type.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
+
+            The type can contain the integer part of this type, and also it has EXTRA_WIDTH bits as the extra bits on the MSB side for carrying up. If this type has no integer part, the type is at least a 2-bit integer because the minimum WIDTH is 2. If this type has only an integer part, the result is this type (without EXTRA_WIDTH).
         */
         template<int EXTRA_WIDTH>
-        using integer_part_t
-            = FixedPoint<(PLACE >= 0) ?
-                         WIDTH :
-                         (WIDTH + PLACE <= 1) ?
-                             std::max(2, 1 + EXTRA_WIDTH) :
-                             WIDTH + PLACE + EXTRA_WIDTH,
-                         (PLACE >= 0) ? PLACE : 0>;
+        using integer_part_t = round_result_t<EXTRA_WIDTH, 0>;
 
     public:
         /* Constructors, Assignments, and conversions */
@@ -403,87 +412,95 @@ namespace prec_ctrl {
         /* Rounding functions */
     private:
         /** Common part of the rounding function.
-            \tparam EXTRA_WIDTH the extra bits on the MSB side.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
+            \tparam LSB_PLACE the LSB place of the result.
             \tparam FUNC The type of a function to adjust a significand.
             \param [in] func The function to adjust a significand.
             \return The rounded value.
         */
-        template<int EXTRA_WIDTH, typename FUNC>
-        constexpr integer_part_t<EXTRA_WIDTH> round_common(FUNC &&func) const noexcept
+        template<int EXTRA_WIDTH, int LSB_PLACE, typename FUNC>
+        constexpr round_result_t<EXTRA_WIDTH, LSB_PLACE> round_common(FUNC &&func) const noexcept
         {
-            integer_part_t<EXTRA_WIDTH> result;
-            if constexpr (PLACE >= 0) {
-                // this is an integer.
+            round_result_t<EXTRA_WIDTH, LSB_PLACE> result;
+            if constexpr (place == result.place) {
+                // no need to round.
                 result.significand = significand;
             } else {
                 const auto s = func(significand);
 
-                // floor(s  / 2**-PLACE), that is, Shift Right Arithmetic
+                // floor(s  / 2**shift), that is, Shift Right Arithmetic
                 // GCC and clang can optimize this to a single SRA operation.
+                constexpr unsigned int shift = result.place - place;
                 if (s >= 0) {
-                    result.significand = s >> -PLACE;
+                    result.significand = s >> shift;
                 } else {
-                    result.significand = -(-(s + 1) >> -PLACE) - 1;
+                    result.significand = -(-(s + 1) >> shift) - 1;
                 }
             }
             return result;
         }
 
         /** The type of an intermediate significand used for rounding.
-            \tparam EXTRA_WIDTH the extra bits on the MSB side.
-            \note It's used only if PLACE < 0.
+            \tparam EXTRA_WIDTH the extra bits on the MSB side for carrying up.
+            \tparam LSB_PLACE the LSB place of the result.
+            \note It's used only if LSB_PLACE > PLACE.
 
-            It has the width of integer_part_t<EXTRA_WIDTH> as the integer part and -PLACE as the width under the decimal point.
+            It can contain the result of rounding and the bits between LSB of the result and LSB of this type.
         */
-        template<int EXTRA_WIDTH>
-        using round_sig_t = significand_t<integer_part_t<EXTRA_WIDTH>::width
-                                          + (PLACE < 0 ? -PLACE : 0)>;
+        template<int EXTRA_WIDTH, int LSB_PLACE>
+        using round_sig_t = significand_t<round_result_t<EXTRA_WIDTH, LSB_PLACE>::width
+                                          + std::max(LSB_PLACE - PLACE, 0)>;
 
     public:
         /** ceil function.
-            \return The minimum integer more than or equal this.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The minimum expressible value more than or equal this.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
         */
-        constexpr integer_part_t<1> ceil() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> ceil() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
-                    constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 - PLACE>;
+                    constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 + LSB_PLACE - PLACE>;
                     return s + FRAC_MASK;
                 }
             });
         }
 
         /** floor function.
-            \return The maximum integer less than or equal this.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The maximum expressible value less than or equal this.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
         */
-        constexpr integer_part_t<1> floor() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> floor() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
-                    return 0;
-                } else {
-                    return s;
-                }
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                return s;
             });
         }
 
         /** trunc function.
-            \return The nearest integer that has the absolute value less than or equal the absolute value of this.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The nearest expressible value that has the absolute value less than or equal the absolute value of this.
         */
-        constexpr integer_part_t<0> trunc() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<0, LSB_PLACE> trunc() const noexcept
         {
-            return round_common<0>([](round_sig_t<0> s) -> round_sig_t<0> {
-                if constexpr (PLACE >= 0) {
+            return round_common<0, LSB_PLACE>([](round_sig_t<0, LSB_PLACE> s)
+                                              -> round_sig_t<0, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
                     if (s >= 0) {
                         return s;
                     } else {
-                        constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 - PLACE>;
+                        constexpr auto FRAC_MASK = MAX_SIGNIFICAND_VALUE<1 + LSB_PLACE - PLACE>;
                         return s + FRAC_MASK;
                     }
                 }
@@ -491,93 +508,108 @@ namespace prec_ctrl {
         }
 
         /** Round to nearest, ties to even.
-            \return The nearest integer of this, basically.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The nearest expressible value of this, basically.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
 
-            This function convert a value to the nearest integer. It converts this to nearest even integer if the value falls midway. It seems to be recommended by IEEE-745.
+            This function converts a value to the nearest expressible value. It converts this to nearest value whose LSB is zero if the value falls midway. It seems to be recommended by IEEE-745.
         */
-        constexpr integer_part_t<1> round_half_to_even() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> round_half_to_even() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
-                    constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<-PLACE>;
-                    const auto int_lsb = (s >> -PLACE) & 1;
-                    return s + HALF_MINUS_1 + int_lsb;
+                    constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<LSB_PLACE - PLACE>;
+                    const auto result_lsb = (s & (static_cast<decltype(s)>(1) << (LSB_PLACE - PLACE))) ? 1 : 0;
+                    return s + HALF_MINUS_1 + result_lsb;
                 }
             });
         }
 
         /** Round to nearest, ties away from zero.
-            \return The nearest integer of this, basically.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The nearest expressible value of this, basically.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
 
-            This function convert a value to the nearest integer. It converts this to nearest integer away from zero if the value falls midway.
+            This function converts a value to the nearest expressible value. It converts this to nearest value away from zero if the value falls midway.
         */
-        constexpr integer_part_t<1> round_half_away_from_zero() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> round_half_away_from_zero() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
-                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
-                    const auto sign_bit = (s >> (WIDTH - 1)) & 1;
+                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (LSB_PLACE - PLACE - 1);
+                    const auto sign_bit = (s < 0) ? 1 : 0;
                     return s + HALF - sign_bit;
                 }
             });
         }
 
         /** Round to nearest, ties to zero.
-            \return The nearest integer of this, basically.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The nearest expressible value of this, basically.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
 
-            This function convert a value to the nearest integer. It converts this to nearest integer toward zero if the value falls midway.
+            This function converts a value to the nearest expressible value. It converts this to nearest value toward zero if the value falls midway.
         */
-        constexpr integer_part_t<1> round_half_toward_zero() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> round_half_toward_zero() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
-                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
-                    const auto sign_bit = (s >> (WIDTH - 1)) & 1;
+                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (LSB_PLACE - PLACE - 1);
+                    const auto sign_bit = (s < 0) ? 1 : 0;
                     return s + HALF - (sign_bit ^ 1);
                 }
             });
         }
 
         /** Round to nearest, ties to upper.
-            \return The nearest integer of this, basically.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The nearest expressible value of this, basically.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
 
-            This function convert a value to the nearest integer. It converts this to nearest upper integer if the value falls midway.
+            This function converts a value to the nearest expressbile value. It converts this to nearest upper value if the value falls midway.
         */
-        constexpr integer_part_t<1> round_half_up() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> round_half_up() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
-                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (-PLACE - 1);
+                    constexpr auto HALF = static_cast<significand_t<WIDTH>>(1) << (LSB_PLACE - PLACE - 1);
                     return s + HALF;
                 }
             });
         }
 
         /** Round to nearest, ties to lower.
-            \return The nearest integer of this, basically.
-            \note This function may cause the result to exceed WIDTH, so it increases one bit than the integer part of this type.
+            \tparam LSB_PLACE the LSB place of the result.
+            \return The nearest expressible value of this, basically.
+            \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
 
-            This function convert a value to the nearest integer. It converts this to nearest lower integer if the value falls midway.
+            This function converts a value to the nearest expressible value. It converts this to nearest lower value if the value falls midway.
         */
-        constexpr integer_part_t<1> round_half_down() const noexcept
+        template<int LSB_PLACE = 0>
+        constexpr round_result_t<1, LSB_PLACE> round_half_down() const noexcept
         {
-            return round_common<1>([](round_sig_t<1> s) -> round_sig_t<1> {
-                if constexpr (PLACE >= 0) {
+            return round_common<1, LSB_PLACE>([](round_sig_t<1, LSB_PLACE> s)
+                                              -> round_sig_t<1, LSB_PLACE> {
+                if constexpr (PLACE >= LSB_PLACE) {
                     return 0;
                 } else {
-                    constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<-PLACE>;
+                    constexpr auto HALF_MINUS_1 = MAX_SIGNIFICAND_VALUE<LSB_PLACE - PLACE>;
                     return s + HALF_MINUS_1;
                 }
             });
