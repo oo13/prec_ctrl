@@ -572,7 +572,7 @@ namespace prec_ctrl {
             \return The nearest expressible value of this, basically.
             \note This function may cause the result to exceed WIDTH, so it increases one bit to the upper side of this type.
 
-            This function converts a value to the nearest expressbile value. It converts this to nearest upper value if the value falls midway.
+            This function converts a value to the nearest expressible value. It converts this to nearest upper value if the value falls midway.
         */
         template<int LSB_PLACE = 0>
         constexpr round_result_t<1, LSB_PLACE> round_half_up() const noexcept
