@@ -294,7 +294,7 @@ namespace prec_ctrl {
         /** Get the inphase value of this and reference vector.
             \tparam T2 The type of the ref.
             \param [in] ref The reference vector.
-            \return The inphase value, which is equal to |ref| * real(this * ref.conj()).
+            \return The inphase value, which is equal to real(this * conj(ref)) = abs(this) * abs(ref) * real(polar(1.0 arg(this)-arg(ref)))
         */
         template<typename T2>
         constexpr auto inphase(const Complex<T2> &ref) const noexcept
@@ -305,7 +305,7 @@ namespace prec_ctrl {
         /** Get the quadrature value of this and reference vector.
             \tparam T2 The type of the ref.
             \param [in] ref The reference vector.
-            \return The quadrature value, which is equal to |ref| * imag(this * ref.conj()).
+            \return The quadrature value, which is equal to imag(this * conj(ref)) = abs(this) * abs(ref) * imag(polar(1.0 arg(this)-arg(ref)))
         */
         template<typename T2>
         constexpr auto quadrature(const Complex<T2> &ref) const noexcept
