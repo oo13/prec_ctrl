@@ -558,5 +558,16 @@ namespace prec_ctrl {
     {
         return x.norm();
     }
+
+    /** conj function.
+        \tparam T A type of FixedPoint.
+        \param [in] x A value of Complex.
+        \return conj of x.
+    */
+    template<typename T>
+    inline constexpr auto conj(const Complex<T>& x) noexcept
+    {
+        return x.conj();
+    }
 }
 #endif // PREC_CTRL_FIXEDPOINTCOMPLEX_H_

@@ -585,3 +585,13 @@ TEST_CASE( "norm() (non-member)", "[FixedPointComplex]" ) {
     REQUIRE( norm(a).width == 16 );
     REQUIRE( norm(a).place == -8 );
 }
+
+TEST_CASE( "conj() (non-member)", "[FixedPointComplex]" ) {
+    REQUIRE( conj(FixedPointComplex<8, -4>(5.25, -2.34))
+             == FixedPointComplex<8, -4>(5.25, 2.34) );
+    REQUIRE( conj(FixedPointComplex<8, -4>(5.25, 2.34))
+             == FixedPointComplex<8, -4>(5.25, -2.34) );
+    FixedPointComplex<8, -4> a(5.25, -2.34);
+    REQUIRE( conj(a).width == 8 );
+    REQUIRE( conj(a).place == -4 );
+}
