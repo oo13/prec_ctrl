@@ -26,6 +26,7 @@ using namespace prec_ctrl;
 
 TEST_CASE( "Default constructor", "[FixedPoint]" ) {
     REQUIRE( FixedPoint<8, 0>() == 0.0 );
+    REQUIRE( 0.0 == FixedPoint<8, 0>() );
 }
 
 TEST_CASE( "Copy constructor", "[FixedPoint]" ) {
