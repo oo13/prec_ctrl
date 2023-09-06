@@ -18,6 +18,7 @@ srcs = [
     'double_limit.cpp',
     'equivalence.cpp',
     'FixedPoint.cpp',
+    'FixedPointComplex.cpp',
     'fixed_numeric.cpp'
 ]
 incdirs = ['../include']

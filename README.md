@@ -29,7 +29,7 @@ In IEEE-754, the double has 54 bits significand. (In this document, "significand
 In practical range, exactness doesn't depend on the exponent.
 
 ### The Sufficient Bit-Width of the Significand for Double Operations
-It's almost same as the integer operation. To make it clear, I created [FixedPoint](@ref prec_ctrl::FixedPoint) class calculating with the same way of double. It handles the number by manually shifting and calculating of the integer.
+It's almost same as the integer operation. To make it clear, I created [FixedPoint](@ref prec_ctrl::FixedPoint) and [FixedPointComplex](@ref FixedPointComplex.h) classes calculating with the same way of double. It handles the number by manually shifting and calculating of the integer.
 
 #### For Addition/Subtraction
 Basically, the addition and the subtraction add one bit-width to the significand. More strictly, it's two plus the difference of the places of the higher MSB and the lower LSB.
