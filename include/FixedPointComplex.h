@@ -490,6 +490,7 @@ namespace prec_ctrl {
 
         /** Set the real part.
             \param [in] val The real part.
+            \note The value may be implicitly rounded and clamped in the same manner of limit_precision().
         */
         constexpr void real(double val) noexcept
         {
@@ -498,6 +499,7 @@ namespace prec_ctrl {
 
         /** Set the imaginary part.
             \param [in] val The imaginary part.
+            \note The value may be implicitly rounded and clamped in the same manner of limit_precision().
         */
         constexpr void imag(double val) noexcept
         {
