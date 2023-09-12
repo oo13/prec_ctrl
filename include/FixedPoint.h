@@ -58,7 +58,7 @@ namespace prec_ctrl {
         \endverbatim
     */
     template<int WIDTH, int PLACE>
-    class FixedPoint {
+    class [[nodiscard]] FixedPoint {
         static_assert(MIN_BIT_WIDTH <= WIDTH, "");
         static_assert(WIDTH <= MAX_BIT_WIDTH, "");
         static_assert(MIN_LSB_PLACE <= PLACE, "");

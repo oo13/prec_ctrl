@@ -31,7 +31,7 @@ namespace prec_ctrl {
         \tparam T A type of FixedPoint.
     */
     template<typename T>
-    class Complex {
+    class [[nodiscard]] Complex {
         static_assert(std::is_same_v<T, FixedPoint<T::width, T::place>>, "T must be a class FixedPoint<WIDTH, PLACE>.");
 
     public:
